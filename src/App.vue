@@ -1,8 +1,5 @@
 <template>
-  <div class="container">
-    App{{ $store.state.user.profile.account }}
-    <button @click="$store.commit('user/setUser', {account:'zhousg'})">设置用户信息</button>
-  </div>
+ <router-view></router-view>
 </template>
 
 <style lang="less">
