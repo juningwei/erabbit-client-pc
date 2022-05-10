@@ -1,6 +1,6 @@
 <template>
   <AppTopnav/>
-  <header>头部组件</header>
+  <AppHeader/>
   <div class="main">
     <router-view></router-view>
   </div>
@@ -8,8 +8,9 @@
 
 <script>
 import AppTopnav from '@/components/app-topnav'
+import AppHeader from '@/components/app-header'
 export default {
-  components: { AppTopnav },
+ components: { AppTopnav, AppHeader },
   setup() {
     
   },
