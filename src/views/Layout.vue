@@ -1,10 +1,11 @@
 <template>
   <AppTopnav/>
   <AppHeader/>
-  <AppFooter/>
-  <div class="main">
+   <div class="main">
     <router-view></router-view>
   </div>
+  <AppFooter/>
+ 
 </template>
 
 <script>
@@ -20,3 +21,9 @@ export default {
   },
 }
 </script>
+
+<style lang="less" scoped>
+  .main {
+    min-height: 1000px;
+  }
+</style>
