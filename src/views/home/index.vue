@@ -1,12 +1,25 @@
 <template>
   <div class="container">
-    homepage
+    <div class="home-entry">
+      <HomeCategory></HomeCategory>
+
+    </div>
   </div>
 </template>
 
-<style lang="less" scoped>
-.container {
-  .hoverShadow();
-  color: @xtxColor;
+
+<script>
+import HomeCategory from './components/home-category'
+export default {
+  components: {
+    HomeCategory
+  },
+  setup() {
+    
+  },
 }
+</script>
+
+<style lang="less" scoped>
+
 </style>
