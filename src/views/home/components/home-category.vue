@@ -1,10 +1,11 @@
 <template>
-  <div class="home-category">
+  <div class='home-category' @mouseleave="categoryId=null">
     <ul class="menu">
       <li
         v-for="item in menuList"
         :key="item.id"
         @mouseenter="categoryId = item.id"
+        :class="{active:categoryId===item.id}"
       >
         <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
         <template v-if="item.children">
@@ -115,7 +116,7 @@ export default {
       padding-left: 40px;
       height: 50px;
       line-height: 50px;
-      &:hover {
+      &:hover,&.active {
         background: @xtxColor;
       }
       a {
