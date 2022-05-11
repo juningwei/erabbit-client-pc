@@ -77,14 +77,6 @@ export default {
   }
 }
 
-.hideLayer {
-  height: 0 !important;
-  opacity: 0 !important;
-}
-.showLayer {
-  height: 132px !important;
-  opacity: 1 !important;
-}
 
 .layer {
   width: 1240px;
@@ -98,6 +90,14 @@ export default {
   z-index: 999;
   box-shadow: 0 0 5px #ccc;
   transition: all 0.2s 0.1s;
+  &.showLayer{
+    height: 132px ;
+    opacity: 1 ;
+  }
+  &.hideLayer{
+    height: 0 ;
+    opacity: 0 ;
+  }
   ul {
     display: flex;
     flex-wrap: wrap;
