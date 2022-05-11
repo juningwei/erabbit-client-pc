@@ -21,7 +21,10 @@
 
     <!-- 弹层 -->
     <div class="layer">
-      <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+      <h4 v-if="currCategory">
+        {{ currCategory.id === "brand" ? "品牌" : "分类" }}推荐
+        <small>根据您的购买或浏览记录推荐</small>
+      </h4>
       <ul
         v-if="currCategory && currCategory.goods && currCategory.goods.length"
       >
@@ -36,6 +39,23 @@
           </RouterLink>
         </li>
       </ul>
+
+      <ul
+        v-if="currCategory && currCategory.brands && currCategory.brands.length"
+      >
+        <li class="brand" v-for="item in currCategory.brands" :key="item.id">
+          <RouterLink to="/">
+            <img :src="item.picture" alt="" />
+            <div class="info">
+              <p class="place">
+                <i class="iconfont icon-dingwei"></i>{{ item.place }}
+              </p>
+              <p class="name ellipsis">{{ item.name }}</p>
+              <p class="desc ellipsis-2">{{ item.desc }}</p>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -43,6 +63,7 @@
 <script>
 import { useStore } from "vuex";
 import { reactive, computed, ref } from "vue";
+import { findBrand } from "@/api/home";
 
 export default {
   setup() {
@@ -50,6 +71,7 @@ export default {
       id: "brand",
       name: "品牌",
       children: [{ id: "brand-chilren", name: "品牌推荐" }],
+      brands: [],
     });
 
     const store = useStore();
@@ -60,7 +82,7 @@ export default {
           name: item.name,
           // 防止初始化没有children的时候调用slice函数报错
           children: item.children && item.children.slice(0, 2),
-           goods: item.goods
+          goods: item.goods,
         };
       });
       list.push(brand);
@@ -71,6 +93,11 @@ export default {
     const currCategory = computed(() => {
       return menuList.value.find((item) => item.id === categoryId.value);
     });
+
+    findBrand().then((data) => {
+      brand.brands = data.result;
+    });
+
     return { menuList, categoryId, currCategory };
   },
 };
@@ -167,6 +194,24 @@ export default {
               i {
                 font-size: 16px;
               }
+            }
+          }
+        }
+      }
+      li.brand {
+        height: 180px;
+        a {
+          align-items: flex-start;
+          img {
+            width: 120px;
+            height: 160px;
+          }
+          .info {
+            p {
+              margin-top: 8px;
+            }
+            .place {
+              color: #999;
             }
           }
         }
