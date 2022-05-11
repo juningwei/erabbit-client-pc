@@ -1,12 +1,12 @@
 <template>
   <ul class="navs">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li v-for="item in list" :key="item.id">
-      <RouterLink to="/">{{ item.name }}</RouterLink>
+    <li v-for="item in list" :key="item.id" @mousemove="showLayer" @mouseout="hideLayer">
+      <RouterLink :to="`/category/${item.id}`" @click="hideLayer">{{ item.name }}</RouterLink>
       <div class="layer">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
-            <RouterLink to="/">
+            <RouterLink :to="`/category/sub/${sub.id}`" @click="hideLayer">
               <img :src="sub.picture" alt="" />
               <p>{{ sub.name }}</p>
             </RouterLink>
@@ -26,7 +26,17 @@ export default {
     const list = computed(() => {
       return store.state.category.list;
     });
-    return { list };
+
+
+    const hideLayer = () => {
+     let layer =  document.getElementsByClassName("layer")[0];
+      layer.className = "layer hideLayer";
+    };
+    const showLayer = () => {
+     let layer =  document.getElementsByClassName("layer")[0];
+      layer.className = "layer showLayer";
+    };
+    return { list, hideLayer, showLayer};
   },
 };
 </script>
@@ -53,12 +63,17 @@ export default {
         color: @xtxColor;
         border-bottom: 1px solid @xtxColor;
       }
-      > .layer {
-        height: 132px;
-        opacity: 1;
-      }
     }
   }
+}
+
+.hideLayer {
+  height: 0 ;
+  opacity: 0 ;
+}
+.showLayer {
+  height: 132px !important;
+  opacity: 1 !important;
 }
 
 .layer {
