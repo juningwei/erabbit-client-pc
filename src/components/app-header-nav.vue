@@ -1,12 +1,12 @@
 <template>
   <ul class="navs">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li v-for="(item, index) in list" :key="item.id" @mousemove="showLayer(index)" @mouseout="hideLayer(index)">
+    <li v-for="(item, index) in list" :key="item.id" @mousemove="showLayer(tag+index)" @mouseout="hideLayer(tag+index)">
       <RouterLink :to="`/category/${item.id}`" @click="hideLayer(index)">{{ item.name }}</RouterLink>
-      <div class="layer">
+      <div class="layer" :id="`${tag+index}_id`">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
-            <RouterLink :to="`/category/sub/${sub.id}`" @click="hideLayer(index)">
+            <RouterLink :to="`/category/sub/${sub.id}`" @click="hideLayer(tag+index)">
               <img :src="sub.picture" alt="" />
               <p>{{ sub.name }}</p>
             </RouterLink>
@@ -21,6 +21,13 @@
 import { useStore } from "vuex";
 import { computed } from "vue";
 export default {
+  props:{
+    tag:{
+      default: 0,
+      type: Number
+    }
+  },
+  // props:[tag],
   setup() {
     const store = useStore();
     const list = computed(() => {
@@ -29,11 +36,14 @@ export default {
 
 
     const hideLayer = (index) => {
-     let layer =  document.getElementsByClassName("layer")[index];
+      // console.log(index)
+
+     let layer =  document.getElementById(`${index}_id`);
       layer.className = "layer hideLayer";
     };
     const showLayer = (index) => {
-     let layer =  document.getElementsByClassName("layer")[index];
+      // console.log(index)
+     let layer =  document.getElementById(`${index}_id`);
       layer.className = "layer showLayer";
     };
     return { list, hideLayer, showLayer};

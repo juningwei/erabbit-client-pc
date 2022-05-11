@@ -2,7 +2,7 @@
   <header class='app-header'>
     <div class="container">
       <h1 class="logo"><RouterLink to="/">小兔鲜</RouterLink></h1>
-      <AppHeaderNav></AppHeaderNav>
+      <AppHeaderNav :tag="200"></AppHeaderNav>
       <div class="search">
         <i class="iconfont icon-search"></i>
         <input type="text" placeholder="搜一搜">
