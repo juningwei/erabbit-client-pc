@@ -1,12 +1,12 @@
 <template>
   <ul class="navs">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li v-for="item in list" :key="item.id" @mousemove="showLayer" @mouseout="hideLayer">
-      <RouterLink :to="`/category/${item.id}`" @click="hideLayer">{{ item.name }}</RouterLink>
+    <li v-for="(item, index) in list" :key="item.id" @mousemove="showLayer(index)" @mouseout="hideLayer(index)">
+      <RouterLink :to="`/category/${item.id}`" @click="hideLayer(index)">{{ item.name }}</RouterLink>
       <div class="layer">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
-            <RouterLink :to="`/category/sub/${sub.id}`" @click="hideLayer">
+            <RouterLink :to="`/category/sub/${sub.id}`" @click="hideLayer(index)">
               <img :src="sub.picture" alt="" />
               <p>{{ sub.name }}</p>
             </RouterLink>
@@ -28,12 +28,12 @@ export default {
     });
 
 
-    const hideLayer = () => {
-     let layer =  document.getElementsByClassName("layer")[0];
+    const hideLayer = (index) => {
+     let layer =  document.getElementsByClassName("layer")[index];
       layer.className = "layer hideLayer";
     };
-    const showLayer = () => {
-     let layer =  document.getElementsByClassName("layer")[0];
+    const showLayer = (index) => {
+     let layer =  document.getElementsByClassName("layer")[index];
       layer.className = "layer showLayer";
     };
     return { list, hideLayer, showLayer};
@@ -68,8 +68,8 @@ export default {
 }
 
 .hideLayer {
-  height: 0 ;
-  opacity: 0 ;
+  height: 0 !important;
+  opacity: 0 !important;
 }
 .showLayer {
   height: 132px !important;
