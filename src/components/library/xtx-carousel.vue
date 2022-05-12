@@ -7,10 +7,10 @@
         </RouterLink>
       </li>
     </ul>
-    <a href="javascript:;" class="carousel-btn prev"><i class="iconfont icon-angle-left"></i></a>
-    <a href="javascript:;" class="carousel-btn next"><i class="iconfont icon-angle-right"></i></a>
+    <a href="javascript:;" @click="toggle(-1)" class="carousel-btn prev"><i class="iconfont icon-angle-left"></i></a>
+    <a href="javascript:;" @click="toggle(1)" class="carousel-btn next"><i class="iconfont icon-angle-right"></i></a>
     <div class="carousel-indicator">
-      <span v-for="(item,i) in sliders" :key="i" :class="{active:index===i}"></span>
+      <span @click="index = i" v-for="(item,i) in sliders" :key="i" :class="{active:index===i}"></span>
     </div>
   </div>
 </template>
@@ -65,7 +65,21 @@ export default {
       }
     }
 
-    return { index, stop, start }
+     // 上一张下一张
+    const toggle = (step) => {
+      const newIndex = index.value + step
+      if (newIndex >= props.sliders.length) {
+        index.value = 0
+        return
+      }
+      if (newIndex < 0) {
+        index.value = props.sliders.length - 1
+        return
+      }
+      index.value = newIndex
+    }
+
+    return { index, stop, start, toggle }
   }
 }
 </script>
