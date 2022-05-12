@@ -1,5 +1,5 @@
 <template>
-  <div class='xtx-carousel'>
+  <div class='xtx-carousel' @mouseenter="stop()" @mouseleave="start()">
     <ul class="carousel-body">
       <li class="carousel-item" v-for="(item,i) in sliders" :key="i" :class="{fade:index===i}">
         <RouterLink to="/">
@@ -55,7 +55,17 @@ export default {
       }
     }, { immediate: true })
 
-    return { index }
+     // 鼠标进入停止，移出开启自动，前提条件：autoPlay为true
+    const stop = () => {
+      if (timer) clearInterval(timer)
+    }
+    const start = () => {
+      if (props.sliders.length && props.autoPlay) {
+        autoPlayFn()
+      }
+    }
+
+    return { index, stop, start }
   }
 }
 </script>
