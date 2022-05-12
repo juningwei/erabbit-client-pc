@@ -2,6 +2,7 @@
   <div class="container">
     <div class="home-entry">
       <HomeCategory></HomeCategory>
+       <HomeBanner />
 
     </div>
   </div>
@@ -10,9 +11,11 @@
 
 <script>
 import HomeCategory from './components/home-category'
+import HomeBanner from './components/home-banner'
 export default {
   components: {
-    HomeCategory
+    HomeCategory,
+    HomeBanner
   },
   setup() {
     
