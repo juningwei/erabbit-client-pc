@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {ref,watch} from 'vue'
+import {ref,watch,onUnmounted} from 'vue'
 export default {
   name: 'XtxCarousel',
   props: {
@@ -78,6 +78,11 @@ export default {
       }
       index.value = newIndex
     }
+
+    // 组件消耗，清理定时器
+    onUnmounted(() => {
+      clearInterval(timer)
+    })
 
     return { index, stop, start, toggle }
   }
