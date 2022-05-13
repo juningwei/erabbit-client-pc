@@ -4,58 +4,60 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem>{{topCategory.name}}</XtxBreadItem>
+        <XtxBreadItem>{{ topCategory.name }}</XtxBreadItem>
       </XtxBread>
       <!-- 轮播图 -->
-      <XtxCarousel :sliders="sliders" style="height:500px" />
+      <XtxCarousel :sliders="sliders" style="height: 500px" />
       <!-- 所有二级分类 -->
       <div class="sub-list">
         <h3>全部分类</h3>
         <ul>
           <li v-for="item in topCategory.children" :key="item.id">
             <a href="javascript:;">
-              <img :src="item.picture" >
-              <p>{{item.name}}</p>
+              <img :src="item.picture" />
+              <p>{{ item.name }}</p>
             </a>
           </li>
         </ul>
       </div>
       <!-- 不同分类商品 -->
       <!-- 分类关联商品 -->
-      <div class="ref-goods">
+      <!-- 分类关联商品 -->
+      <div class="ref-goods" v-for="item in subList" :key="item.id">
         <div class="head">
-          <h3>- 海鲜 -</h3>
-          <p class="tag">温暖柔软，品质之选</p>
+          <h3>- {{ item.name }} -</h3>
+          <p class="tag">{{ item.desc }}</p>
           <XtxMore />
         </div>
         <div class="body">
-          <GoodsItem v-for="i in 5" :key="i" />
+          <GoodsItem v-for="g in item.goods" :key="g.id" :goods="g" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { findBanner } from '@/api/home'
-import { ref,computed } from 'vue'
-import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
-import GoodsItem from './components/goods-item'
+import { findBanner } from "@/api/home";
+import { findTopCategory } from "@/api/category";
+import { ref, computed, watch, reactive } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+import GoodsItem from "./components/goods-item";
 export default {
-  name: 'TopCategory',
-  components:{
-    GoodsItem
+  name: "TopCategory",
+  components: {
+    GoodsItem,
   },
-  setup () {
+  setup() {
     // 轮播图
-    const sliders = ref([])
-    findBanner().then(data => {
-      sliders.value = data.result
-    })
+    const sliders = ref([]);
+    findBanner().then((data) => {
+      sliders.value = data.result;
+    });
 
     // 面包屑+所有分类
-    const store = useStore()
-    const route = useRoute()
+    const store = useStore();
+    const route = useRoute();
     const topCategory = computed(() => {
       let cate = {}
       const item = store.state.category.list.find(item => {
@@ -64,13 +66,32 @@ export default {
       if (item) cate = item
       return cate
     })
-    
+
+    // 推荐商品
+    const subList = ref([]);
+
+    const getSubList = () => {
+      findTopCategory(route.params.id).then((data) => {
+        subList.value = data.result.children;
+      });
+    };
+
+    watch(
+      () => route.params.id,
+      (newVal) => {
+        console.log(newVal)
+        newVal && getSubList();
+      },
+      { immediate: true }
+    );
+
     return {
       sliders,
       topCategory,
-    }
-  }
-}
+      subList,
+    };
+  },
+};
 </script>
 <style scoped lang="less">
 .top-category {
