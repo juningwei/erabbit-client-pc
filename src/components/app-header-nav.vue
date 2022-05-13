@@ -2,7 +2,7 @@
   <ul class="navs">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
     <li v-for="(item, index) in list" :key="item.id" @mousemove="showLayer(tag+index)" @mouseout="hideLayer(tag+index)">
-      <RouterLink :to="`/category/${item.id}`" @click="hideLayer(index)">{{ item.name }}</RouterLink>
+      <RouterLink :to="`/category/${item.id}`" @click="hideLayer(tag+index)">{{ item.name }}</RouterLink>
       <div class="layer" :id="`${tag+index}_id`">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
