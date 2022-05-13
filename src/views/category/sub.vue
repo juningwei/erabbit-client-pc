@@ -3,6 +3,7 @@
     <div class="container">
       <!-- 面包屑 -->
       <SubBread />
+      <SubFilter />
       
     </div>
   </div>
@@ -10,8 +11,9 @@
 
 <script>
 import SubBread from './components/sub-bread'
+import SubFilter from './components/sub-filter'
 export default {
-  components: { SubBread},
+  components: { SubBread,SubFilter},
   setup() {
     
   },
