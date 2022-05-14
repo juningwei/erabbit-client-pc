@@ -13,7 +13,6 @@ export default {
     // app.component(XtxMore.name, XtxMore)
     // app.component(XtxBread.name, XtxBread)
     // app.component(XtxBreadItem.name, XtxBreadItem)
-
      // 批量注册全局组件
      importFn.keys().forEach(key => {
       // 导入组件
