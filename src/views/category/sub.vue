@@ -4,7 +4,11 @@
       <!-- 面包屑 -->
       <SubBread />
       <SubFilter />
-      <XtxCheckbox>888</XtxCheckbox>
+      <div class="goods-list">
+        <!-- 排序 -->
+        <SubSort />
+        <!-- 列表 -->
+      </div>
       
     </div>
   </div>
@@ -13,8 +17,9 @@
 <script>
 import SubBread from './components/sub-bread'
 import SubFilter from './components/sub-filter'
+import SubSort from './components/sub-sort'
 export default {
-  components: { SubBread,SubFilter},
+  components: { SubBread, SubFilter, SubSort},
   setup() {
     
   },
