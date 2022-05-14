@@ -7,7 +7,7 @@
       <!-- 结果区域 -->
       <div class="goods-list">
         <!-- 排序 -->
-        <SubSort />
+        <SubSort @sort-change="changeSort"/>
         <!-- 列表 -->
         <ul>
           <li v-for="item in goodsList" :key="item.id" >
@@ -77,8 +77,15 @@ export default {
         finished.value = false
       }
     })
+     // 监听排序改变
+    const changeSort = (sortParams) => {
+      reqParams = { ...reqParams, ...sortParams }
+      reqParams.page = 1
+      goodsList.value = []
+      finished.value = false
+    }
 
-    return { loading, finished, goodsList, getData }
+    return { loading, finished, goodsList, getData, changeSort }
   }
 }
 </script>

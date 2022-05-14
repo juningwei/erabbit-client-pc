@@ -22,6 +22,7 @@ export default {
       checked.value = !checked.value
       // 使用emit通知父组件数据的改变
       emit('update:modelValue', checked.value)
+      emit('change', checked.value)
     }
     // 使用侦听器，得到父组件传递数据，给checked数据
     watch(() => props.modelValue, () => {
