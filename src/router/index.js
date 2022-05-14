@@ -4,6 +4,7 @@ import SubCategory from '@/views/category/sub'
 
 const Layout = () => import('@/views/Layout')
 const Home = () => import('@/views/home')
+const Goods = () => import('@/views/goods/index')
 const routes = [
   {
     path:'/',
@@ -14,7 +15,8 @@ const routes = [
         component:Home
       },
       { path: '/category/:id', component: TopCategory },
-      { path: '/category/sub/:id', component: SubCategory }
+      { path: '/category/sub/:id', component: SubCategory },
+      { path: '/product/:id', component: Goods }
 
     ]
   }
