@@ -8,14 +8,14 @@
     <div class="option" v-if="active">
       <div v-if="loading" class="loading"></div>
       <template v-else>
-        <span class="ellipsis" v-for="item in currList" :key="item.code">{{item.name}}</span>
+        <span @click="changeItem(item)" class="ellipsis" v-for="item in currList" :key="item.code">{{item.name}}</span>
       </template>
     </div>
   </div>
 </template>
 
 <script>
-import { ref,computed } from 'vue'
+import { ref,computed,reactive } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import axios from 'axios'
 
@@ -27,7 +27,7 @@ export default {
       default: ''
     }
   },
-  setup () {
+  setup (props, {emit}) {
     // 控制展开收起,默认收起
     const active = ref(false)
     const loading = ref(false)
@@ -40,13 +40,55 @@ export default {
         cityData.value = data
         loading.value = false
       })
+      for (const key in changeResult) {
+        changeResult[key] = ''
+      }
     }
 
-     const currList = computed(() => {
-      const currList = cityData.value
-      // TODO 根据点击的省份城市获取对应的列表
+     // 定义计算属性
+    const currList = computed(() => {
+      // 省份
+      let currList = cityData.value
+      // 城市
+      if (changeResult.provinceCode) {
+        currList = currList.find(p => p.code === changeResult.provinceCode).areaList
+      }
+      // 地区
+      if (changeResult.cityCode) {
+        currList = currList.find(c => c.code === changeResult.cityCode).areaList
+      }
       return currList
     })
+
+    const changeResult = reactive({
+      provinceCode: '',
+      provinceName: '',
+      cityCode: '',
+      cityName: '',
+      countyCode: '',
+      countyName: '',
+      fullLocation: ''  
+    })
+	
+    const changeItem = (item) => {
+      // 省份
+      if (item.level === 0) {
+        changeResult.provinceCode = item.code
+        changeResult.provinceName = item.name
+      }
+      // 市
+      if (item.level === 1) {
+        changeResult.cityCode = item.code
+        changeResult.cityName = item.name
+      }
+      if (item.level === 2) {
+        changeResult.countyCode = item.code
+        changeResult.countyName = item.name
+        changeResult.fullLocation = `${changeResult.provinceName} ${changeResult.cityName} ${changeResult.countyName}`
+        closeDialog()
+        emit('change',changeResult)
+      }
+    }
 
     const closeDialog = () => {
       active.value = false
@@ -61,7 +103,8 @@ export default {
     onClickOutside(target, () => {
       closeDialog()
     })
-    return { active, toggleDialog, target, currList, loading }  }
+    return { active, toggleDialog, target, currList, loading, changeItem }
+    }
 }
 
 
