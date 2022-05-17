@@ -1,8 +1,8 @@
 <template>
   <div class="xtx-city" ref="target">
     <div class="select" @click="toggleDialog" :class="{active}">
-      <span class="placeholder">请选择配送地址</span>
-      <span class="value"></span>
+      <span v-if="!fullLocation" class="placeholder">请选择配送地址</span>
+      <span v-else class="value">{{fullLocation}}</span>
       <i class="iconfont icon-angle-down"></i>
     </div>
     <div class="option" v-if="active">
@@ -21,6 +21,12 @@ import axios from 'axios'
 
 export default {
   name: 'XtxCity',
+  props: {
+    fullLocation: {
+      type:String,
+      default: ''
+    }
+  },
   setup () {
     // 控制展开收起,默认收起
     const active = ref(false)
