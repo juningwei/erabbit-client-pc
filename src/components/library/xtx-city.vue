@@ -6,22 +6,42 @@
       <i class="iconfont icon-angle-down"></i>
     </div>
     <div class="option" v-if="active">
-      <span class="ellipsis" v-for="i in 24" :key="i">北京市</span>
+      <div v-if="loading" class="loading"></div>
+      <template v-else>
+        <span class="ellipsis" v-for="item in currList" :key="item.code">{{item.name}}</span>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref,computed } from 'vue'
 import { onClickOutside } from '@vueuse/core'
+import axios from 'axios'
+
 export default {
   name: 'XtxCity',
   setup () {
     // 控制展开收起,默认收起
     const active = ref(false)
+    const loading = ref(false)
+    const cityData = ref([])
     const openDialog = () => {
       active.value = true
+      loading.value = true
+      // 获取数据
+      getCityData().then(data => {
+        cityData.value = data
+        loading.value = false
+      })
     }
+
+     const currList = computed(() => {
+      const currList = cityData.value
+      // TODO 根据点击的省份城市获取对应的列表
+      return currList
+    })
+
     const closeDialog = () => {
       active.value = false
     }
@@ -35,8 +55,25 @@ export default {
     onClickOutside(target, () => {
       closeDialog()
     })
-    return { active, toggleDialog, target }
-  }
+    return { active, toggleDialog, target, currList, loading }  }
+}
+
+
+const getCityData = () => {
+  // 这个位置可能有异常操作，封装成promise
+  return new Promise((resolve, reject) => {
+    if (window.cityData) {
+      // 有缓存
+      resolve(window.cityData)
+    } else {
+      // 无缓存
+      const url = 'https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/area.json'
+      axios.get(url).then(res => {
+        window.cityData = res.data
+        resolve(window.cityData)
+      })
+    }
+  })
 }
 </script>
 
@@ -87,6 +124,11 @@ export default {
       &:hover {
         background: #f5f5f5;
       }
+    }
+    .loading {
+      height: 290px;
+      width: 100%;
+      background: url(../../assets/images/loading.gif) no-repeat center;
     }
   }
 }
