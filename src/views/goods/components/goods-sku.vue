@@ -4,8 +4,8 @@
       <dt>{{item.name}}</dt>
       <dd>
         <template v-for="val in item.values" :key="val.name">
-          <img :class="{selected:val.selected}" @click="clickSpecs(item,val)" v-if="val.picture" :src="val.picture" :title="val.name">
-          <span :class="{selected:val.selected}" @click="clickSpecs(item,val)" v-else>{{val.name}}</span>
+          <img :class="{selected:val.selected, disabled:val.disabled}" @click="clickSpecs(item,val)" v-if="val.picture" :src="val.picture" :title="val.name">
+          <span :class="{selected:val.selected, disabled:val.disabled}" @click="clickSpecs(item,val)" v-else>{{val.name}}</span>
         </template>
       </dd>
     </dl>
@@ -39,6 +39,16 @@ const getPathMap = (skus) => {
   })
   return pathMap
 }
+
+// 更新按钮的禁用状态
+const updateDisabledStatus = (specs, pathMap) => {
+  specs.forEach(item => {
+    item.values.forEach(val => {
+      val.disabled = !pathMap[val.name]
+    })
+  })
+}
+
 export default {
   name: 'GoodsSku',
   props: {
@@ -50,8 +60,8 @@ export default {
   setup (props) {
     const pathMap = getPathMap(props.goods.skus)
     console.log(pathMap)
-
-    const clickSpecs = (item, index) => {
+    updateDisabledStatus(props.goods.specs, pathMap)
+    const clickSpecs = (item, val) => {
       // item.values.forEach((v, i) => {
       //   if (i == index) {
       //     v.selected = !v.selected
@@ -59,7 +69,7 @@ export default {
       //     v.selected = false
       //   }
       // })
-
+      if (val.disabled) return
       // 1. 选中与取消选中逻辑
       if (val.selected) {
         val.selected = false
