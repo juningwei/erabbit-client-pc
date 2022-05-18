@@ -1,29 +1,28 @@
 <template>
   <div class="goods-comment">
-    <div class="head">
+     <!-- 头部 -->
+    <div class="head" v-if="commentInfo">
       <div class="data">
-        <p><span>100</span><span>人购买</span></p>
-        <p><span>99.99%</span><span>好评率</span></p>
+        <p><span>{{commentInfo.salesCount}}</span><span>人购买</span></p>
+        <p><span>{{commentInfo.praisePercent}}</span><span>好评率</span></p>
       </div>
       <div class="tags">
         <div class="dt">大家都在说：</div>
         <div class="dd">
-          <a href="javascript:;" class="active">全部评价（1000）</a>
-          <a href="javascript:;">好吃（1000）</a>
-          <a href="javascript:;">便宜（1000）</a>
-          <a href="javascript:;">很好（1000）</a>
-          <a href="javascript:;">再来一次（1000）</a>
-          <a href="javascript:;">快递棒（1000）</a>
+          <a
+            v-for="(item,i) in commentInfo.tags"
+            :key="item.title"
+            href="javascript:;"
+            :class="{active:currTagIndex===i}"
+            @click="changeTag(i)"
+          >
+            {{item.title}}（{{item.tagCount}}）
+          </a>
         </div>
       </div>
     </div>
-    <div class="sort">
-      <span>排序：</span>
-      <a href="javascript:;" class="active">默认</a>
-      <a href="javascript:;">最新</a>
-      <a href="javascript:;">最热</a>
-    </div>
-    <div class="list"></div>
+    <!-- 排序 -->
+    <div class="sort" v-if="commentInfo"></div>
   </div>
 </template>
 <script>
@@ -47,10 +46,14 @@ export default {
       default: () => {}
     }
   },
-  setup (props) {
+  setup () {
     const goods = inject('goods')
     const commentInfo = getCommentInfo(goods.value.id)
-    return { commentInfo }
+    const currTagIndex = ref(0)
+    const changeTag = (i) => {
+      currTagIndex.value = i
+    }
+    return { commentInfo, currTagIndex, changeTag }
   }
 }
 </script>
