@@ -23,31 +23,41 @@
     </div>
     <!-- 排序 -->
     <div class="sort">
-      <span>排序：</span>
-      <a href="javascript:;" class="active">默认</a>
-      <a href="javascript:;">最新</a>
-      <a href="javascript:;">最热</a>
+        <span>排序：</span>
+        <a
+          @click="changeSort(null)"
+          href="javascript:;"
+          :class="{active:reqParams.sortField===null}"
+        >默认</a>
+        <a
+          @click="changeSort('praiseCount')"
+          href="javascript:;"
+          :class="{active:reqParams.sortField==='praiseCount'}"
+        >最热</a>
+        <a
+          @click="changeSort('createTime')"
+          href="javascript:;"
+          :class="{active:reqParams.sortField==='createTime'}"
+        >最新</a>
     </div>
      <!-- 列表 -->
+    <!-- 列表 -->
     <div class="list">
-      <div class="item">
+      <div class="item" v-for="item in commentList" :key="item.id">
         <div class="user">
-          <img src="http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png" alt="">
-          <span>兔****m</span>
+          <img :src="item.member.avatar" alt="">
+          <span>{{formatNickname(item.member.nickname)}}</span>
         </div>
         <div class="body">
           <div class="score">
-            <i class="iconfont icon-wjx01"></i>
-            <i class="iconfont icon-wjx01"></i>
-            <i class="iconfont icon-wjx01"></i>
-            <i class="iconfont icon-wjx01"></i>
-            <i class="iconfont icon-wjx02"></i>
-            <span class="attr">颜色：黑色 尺码：M</span>
+            <i v-for="i in item.score" :key="i+'1'" class="iconfont icon-wjx01"></i>
+            <i v-for="i in 5-item.score" :key="i+'2'" class="iconfont icon-wjx02"></i>
+            <span class="attr">{{formatSpecs(item.orderInfo.specs)}}</span>
           </div>
-          <div class="text">网易云app上这款耳机非常不错 新人下载网易云购买这款耳机优惠大 而且耳机🎧确实正品 音质特别好 戴上这款耳机 听音乐看电影效果声音真是太棒了 无线方便 小盒自动充电 最主要是质量好音质棒 想要买耳机的放心拍 音效巴巴滴 老棒了</div>
+          <div class="text">{{item.content}}</div>
           <div class="time">
-            <span>2020-10-10 10:11:22</span>
-            <span class="zan"><i class="iconfont icon-dianzan"></i>100</span>
+            <span>{{item.createTime}}</span>
+            <span class="zan"><i class="iconfont icon-dianzan"></i> {{item.praiseCount}}</span>
           </div>
         </div>
       </div>
@@ -56,8 +66,8 @@
   </div>
 </template>
 <script>
-import { findGoodsCommentInfo } from '@/api/product'
-import { ref, inject } from 'vue'
+import { findGoodsCommentInfo, findGoodsCommentList } from '@/api/product'
+import { ref, inject, reactive, watch } from 'vue'
 const getCommentInfo = (id) => {
   const commentInfo = ref(null)
   findGoodsCommentInfo(id).then(data => {
@@ -82,8 +92,50 @@ export default {
     const currTagIndex = ref(0)
     const changeTag = (i) => {
       currTagIndex.value = i
+      // 设置有图和标签条件
+      const currTag = commentInfo.value.tags[i]
+      if (currTag.type === 'all') {
+        reqParams.hasPicture = false
+        reqParams.tag = null
+      } else if (currTag.type === 'img') {
+        reqParams.hasPicture = true
+        reqParams.tag = null
+      } else {
+        reqParams.hasPicture = false
+        reqParams.tag = currTag.title
+      }
+      reqParams.page = 1
     }
-    return { commentInfo, currTagIndex, changeTag }
+    // 筛选条件准备
+    const reqParams = reactive({
+      page: 1,
+      pageSize: 10,
+      hasPicture: null,
+      tag: null,
+      sortField: null
+    })
+    // 改变排序
+    const changeSort = (type) => {
+        reqParams.sortField = type
+        reqParams.page = 1
+    }
+
+     // 初始化或者筛选条件改变后，获取列表数据。
+    const commentList = ref([])
+    watch(reqParams, async () => {
+      const data = await findGoodsCommentList(goods.value.id, reqParams)
+      commentList.value = data.result.items
+    }, { immediate: true })
+
+     // 定义转换数据的函数（对应vue2.0的过滤器）
+    const formatSpecs = (specs) => {
+      return specs.reduce((p, c) => `${p} ${c.name}：${c.nameValue}`, '').trim()
+    }
+    const formatNickname = (nickname) => {
+      return nickname.substr(0, 1) + '****' + nickname.substr(-1)
+    }
+
+    return { commentInfo, currTagIndex, changeTag, reqParams, changeSort, formatSpecs, formatNickname, commentList }
   }
 }
 </script>
