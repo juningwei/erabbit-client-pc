@@ -90,6 +90,14 @@ export default {
     const goods = inject('goods')
     const commentInfo = getCommentInfo(goods.value.id)
     const currTagIndex = ref(0)
+    // 筛选条件准备
+    const reqParams = reactive({
+      page: 1,
+      pageSize: 10,
+      hasPicture: null,
+      tag: null,
+      sortField: null
+    })
     const changeTag = (i) => {
       currTagIndex.value = i
       // 设置有图和标签条件
@@ -106,14 +114,7 @@ export default {
       }
       reqParams.page = 1
     }
-    // 筛选条件准备
-    const reqParams = reactive({
-      page: 1,
-      pageSize: 10,
-      hasPicture: null,
-      tag: null,
-      sortField: null
-    })
+    
     // 改变排序
     const changeSort = (type) => {
         reqParams.sortField = type
