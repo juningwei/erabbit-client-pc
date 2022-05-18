@@ -49,7 +49,7 @@ import GoodsName from './components/goods-name'
 import GoodsSku from './components/goods-sku'
 import GoodsTabs from './components/goods-tabs'
 import GoodsHot from './components/goods-hot'
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, ref, watch, provide } from 'vue'
 import { findGoods } from '@/api/product'
 import { useRoute } from 'vue-router'
 export default {
@@ -64,6 +64,7 @@ export default {
         goods.value.inventory = sku.inventory
       }
     }
+    provide('goods', goods)
     const num = ref(1)
     return { goods, changeSku, num }
   }
