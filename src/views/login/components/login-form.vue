@@ -8,19 +8,19 @@
         <i class="iconfont icon-msg"></i> 使用短信登录
       </a>
     </div>
-    <div class="form">
+    <Form class="form" :validation-schema="schema" v-slot="{errors}" autocomplete="off">
       <template v-if="!isMsgLogin">
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-user"></i>
-            <input type="text" placeholder="请输入用户名" />
+            <Field :class="{error:errors.account}" name="account" v-model="form.account" type="text" placeholder="请输入用户名" />
           </div>
-          <!-- <div class="error"><i class="iconfont icon-warning" />请输入手机号</div> -->
+          <div v-if="errors.account" class="error"><i class="iconfont icon-warning" />{{errors.account}}</div>
         </div>
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-lock"></i>
-            <input type="password" placeholder="请输入密码">
+            <Field name="password" v-model="form.password" type="password" placeholder="请输入密码" />
           </div>
         </div>
       </template>
@@ -28,13 +28,13 @@
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-user"></i>
-            <input type="text" placeholder="请输入手机号" />
+            <Field name="mobile" v-model="form.mobile" type="text" placeholder="请输入手机号" />
           </div>
         </div>
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-code"></i>
-            <input type="password" placeholder="请输入验证码">
+            <Field name="code" v-model="form.code" type="password" placeholder="请输入验证码" />
             <span class="code">发送验证码</span>
           </div>
         </div>
@@ -49,7 +49,7 @@
         </div>
       </div>
       <a href="javascript:;" class="btn">登录</a>
-    </div>
+    </Form>
     <div class="action">
       <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
       <div class="url">
@@ -61,17 +61,30 @@
 </template>
 
 <script>
+import { Form, Field } from 'vee-validate'
 import { reactive, ref } from 'vue'
 export default {
   name: 'LoginForm',
+  components: {Form, Field},
   setup () {
     // 是否短信登录
     const isMsgLogin = ref(false)
     // 表单信息对象
     const form = reactive({
-      isAgree: true
+      isAgree: true,
+      account: null,
+      password: null,
+      mobile: null,
+      code: null
     })
-    return { isMsgLogin, form }
+    const schema = {
+      account (value) {
+        if (!value) return '请输入用户名'
+        return true
+      }
+    }
+    
+    return { isMsgLogin, form, schema}
   }
 }
 </script>
